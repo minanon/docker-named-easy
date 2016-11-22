@@ -1,0 +1,9 @@
+zone \"${domain}.\" IN {
+    type master;
+    file \"${domain}.zone\";
+};
+
+zone \"${rip}.in-addr.arpa.\" IN {
+    type master;
+    file \"${rip}.zone\";
+};

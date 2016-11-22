@@ -1,0 +1,9 @@
+\$TTL ${ttl}
+@       IN      SOA     ${servername%.}. ${email%.}. (
+                                        ${zone_serial}
+                                        ${refresh}
+                                        ${retry}
+                                        ${expire}
+                                        ${minimum} )
+                IN      NS      ${servername%.}.
+${subdomain}

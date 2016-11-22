@@ -1,0 +1,28 @@
+acl mylocal {
+    127.0.0.0/8;
+    ${mynet};
+};
+
+options {
+    directory \"${bind_directory}\";
+    pid-file \"/run/named/named.pid\";
+
+    listen-on {
+        127.0.0.1;
+        ${myaddr};
+    };
+    forwarders {
+        ${forwarders};
+    };
+
+    recursion yes;
+
+    allow-recursion { mylocal; };
+    allow-transfer { mylocal; };
+    allow-update { mylocal; };
+    allow-query-cache { mylocal; };
+
+    version none;
+    hostname none;
+    server-id none;
+};
