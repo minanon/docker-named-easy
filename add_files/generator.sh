@@ -13,6 +13,7 @@ global_tmpl_file=${template_dir}/global.tmpl
 zone_tmpl_file=${template_dir}/zone.tmpl
 subdomain_tmpl_file=${template_dir}/subdomain.tmpl
 zone_conf_tmpl_file=${template_dir}/zone_conf.tmpl
+zone_conf_norip_tmpl_file=${template_dir}/zone_conf_norip.tmpl
 
 # global vars
 mynet=$(ip -o -4 a | grep -v ': lo' | awk 'NR == 1{print $4}')
@@ -30,6 +31,11 @@ zone_minimum=86400
 zone_serial=0
 
 root_url="https://www.internic.net/domain/named.root"
+
+# remove exists files
+clear_data(){
+    rm -rf ${bind_conf_file} ${bind_directory}/*
+}
 
 
 # global settings
@@ -96,13 +102,25 @@ zone_setting(){
 
     zone_serial=$(( $zone_serial + 1 ))
     # ptr zone
-    (
-        local subdomain=$(ptr_conf)
-        eval "echo \"$(cat ${zone_tmpl_file})\"" > ${bind_directory}/${rip}.zone
-    )
+    local subdomain=$(ptr_conf)
+    local rzone_file=${bind_directory}/${rip}.zone
+    local exist_rip=false
+    if [ -f "${rzone_file}" ]
+    then
+        exist_rip=true
+        echo "${subdomain}" >> ${rzone_file}
+    else
+        eval "echo \"$(cat ${zone_tmpl_file})\"" > ${rzone_file}
+    fi
 
     # add
-    eval "echo \"$(cat ${zone_conf_tmpl_file})\"" >> ${bind_conf_file}
+    if ${exist_rip}
+    then
+        local target=${zone_conf_norip_tmpl_file}
+    else
+        local target=${zone_conf_tmpl_file}
+    fi
+    eval "echo \"$(cat ${target})\"" >> ${bind_conf_file}
 }
 
 # setting
@@ -153,4 +171,5 @@ read_create () {
 }
 
 mkdir -p "${bind_directory}"
+clear_data
 read_create
