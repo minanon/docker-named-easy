@@ -18,6 +18,7 @@ zone_conf_norip_tmpl_file=${template_dir}/zone_conf_norip.tmpl
 # global vars
 mynet=$(ip -o -4 a | grep -v ': lo' | awk 'NR == 1{print $4}')
 myaddr=${mynet%/*}
+myacl=""
 email="your.email.address"
 servername="mydns.local"
 forwarders="8.8.8.8;208.67.222.123"
@@ -46,6 +47,14 @@ global_conf(){
     local var=${1%% *}
     local val=$(echo "${1#* }" | sed -e 's/^ \+\| \+$//g' )
     eval "${var}='${val}'"
+    case "${var}" in
+        acl)
+            myacl="${acl%;};"
+            ;;
+        forwarders)
+            forwarders=${forwarders%;}
+            ;;
+    esac
 }
 
 # hint settings

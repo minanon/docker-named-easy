@@ -13,7 +13,7 @@ docker build -t minanon/named-easy .
 Please setup a `generator.conf` under /generator/configs when start the container.
 
 ```bash
-docker run -d -v /path/to/configs:/generator/configs minanon/named-easy
+docker run -d -p 53:53/tcp -p 53:53/udp -v /path/to/configs:/generator/configs minanon/named-easy
 ```
 
 ## Setting
@@ -24,11 +24,12 @@ For `generator.conf`.
 
 `[global]` section configs are used on option and all config.
 
-|Item      |Value                      |
-|:---      |:---                       |
-|email     |Email address on SOA record|
-|servername|dns server name            |
-|forwarders|DNS forwarders             |
+|Item      |Value                                                |
+|:---      |:---                                                 |
+|email     |Email address on SOA record                          |
+|servername|dns server name                                      |
+|forwarders|DNS forwarders                                       |
+|acl       |add ACL (127.0.0.1 and same network were already set)|
 
 #### Example
 
@@ -74,5 +75,5 @@ example.com 93.184.216.34 "@ A, mail A 127.0.0.1, mail MX 10 mail.example.com., 
 `/generator` has `configs` and `templates`. You can edit templates.
 
 ```bash
-docker run -d -v /path/to/generator:/generator minanon/named-easy
+docker run -d -p 53:53/tcp -p 53:53/udp -v /path/to/generator:/generator minanon/named-easy
 ```
